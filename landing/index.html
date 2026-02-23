@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Auxiliary — Claude Code をもっと深く理解する</title>
+  <meta name="description" content="Claude Code が何をしているかをリアルタイムで解説。ファイル操作・コマンド・プロンプトを初心者にもわかりやすい日本語で表示します。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { mono: ['"JetBrains Mono"', 'Menlo', 'monospace'] },
+          colors: {
+            surface: { 0: '#0d0f14', 1: '#13161e', 2: '#1a1e28' },
+            ink: { primary: '#e2e8f0', secondary: '#94a3b8', muted: '#64748b' },
+            accent: { cyan: '#06b6d4', violet: '#8b5cf6', amber: '#f59e0b', green: '#10b981' },
+          },
+          animation: { blink: 'blink 1s step-end infinite', float: 'float 6s ease-in-out infinite' },
+          keyframes: {
+            blink: { '0%,100%': { opacity: '1' }, '50%': { opacity: '0' } },
+            float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #0d0f14; }
+    .dot-grid { background-image: radial-gradient(circle, #ffffff08 1px, transparent 1px); background-size: 24px 24px; }
+    .glow-cyan { box-shadow: 0 0 60px -10px rgba(6,182,212,0.3); }
+    .glow-violet { box-shadow: 0 0 60px -10px rgba(139,92,246,0.3); }
+    .gradient-text { background: linear-gradient(135deg, #06b6d4, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+    .card-hover:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body class="font-mono text-ink-primary min-h-screen dot-grid">
+
+  <!-- ナビ -->
+  <nav class="flex items-center justify-between px-6 py-4 border-b border-white/5 backdrop-blur-xl sticky top-0 z-50" style="background: rgba(13,15,20,0.85)">
+    <div class="flex items-center gap-2.5">
+      <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2C14 2 15.5 10 22 14C15.5 18 14 26 14 26C14 26 12.5 18 6 14C12.5 10 14 2 14 2Z" fill="url(#navGrad)"/>
+        <defs><linearGradient id="navGrad" x1="6" y1="2" x2="22" y2="26"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      <span class="text-sm font-bold text-ink-primary">Code Auxiliary</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="#features" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors hidden sm:block">機能</a>
+      <a href="#plans" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors hidden sm:block">プラン</a>
+      <a href="#setup" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors hidden sm:block">使い方</a>
+      <a href="https://github.com/d50557770-cyber/code-auxiliary" target="_blank" rel="noopener"
+         class="text-xs px-3 py-1.5 rounded-lg border border-white/10 text-ink-secondary hover:border-white/20 hover:text-ink-primary transition-colors">
+        GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- ヒーロー -->
+  <section class="relative flex flex-col items-center justify-center text-center px-6 pt-24 pb-20 overflow-hidden">
+    <!-- 背景グロー -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full opacity-10" style="background: radial-gradient(ellipse, #06b6d4 0%, #8b5cf6 50%, transparent 70%); filter: blur(60px);"></div>
+
+    <div class="relative z-10">
+      <!-- バッジ -->
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-accent-cyan/20 bg-accent-cyan/5 text-accent-cyan text-xs mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse"></span>
+        Claude Code 専用 · 日本語対応
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-6">
+        <span class="gradient-text">Claude Code</span> の動きを<br />
+        <span class="text-ink-primary">リアルタイムで理解する</span>
+      </h1>
+
+      <p class="text-sm sm:text-base text-ink-muted max-w-xl mx-auto leading-relaxed mb-10">
+        別のターミナルで Claude Code を動かすだけ。<br />
+        ファイル操作・コマンド・プロンプト・Claude の返答を<br />
+        初心者にもわかる日本語でリアルタイム解説します。
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="#setup"
+           class="px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all glow-cyan"
+           style="background: linear-gradient(135deg, #06b6d4, #0891b2)">
+          無料で始める →
+        </a>
+        <a href="#plans"
+           class="px-6 py-3 rounded-xl text-sm font-semibold border border-white/10 text-ink-secondary hover:border-white/20 hover:text-ink-primary transition-colors">
+          プランを見る
+        </a>
+      </div>
+
+      <!-- ターミナル風プレビュー -->
+      <div class="mt-14 mx-auto max-w-2xl rounded-xl border border-white/8 overflow-hidden card-hover glow-violet" style="background: #13161e">
+        <div class="flex items-center gap-2 px-4 py-3 border-b border-white/5" style="background: #1a1e28">
+          <div class="w-3 h-3 rounded-full bg-red-500/60"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/60"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500/60"></div>
+          <span class="text-xs text-ink-muted ml-2">~/code-explainer / overview</span>
+        </div>
+        <div class="p-5 text-left space-y-3">
+          <div class="flex items-start gap-3 p-3 rounded-lg border border-accent-green/15 bg-accent-green/5">
+            <span class="text-accent-green font-bold text-xs shrink-0">+</span>
+            <div>
+              <p class="text-xs text-accent-green/80">新規作成 · App.tsx</p>
+              <p class="text-xs text-ink-muted mt-0.5">React のルートコンポーネントです。アプリ全体の状態管理と画面の切り替えを担当しています。</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-lg border border-accent-violet/15 bg-accent-violet/5">
+            <span class="text-accent-violet font-bold text-xs shrink-0">&gt;</span>
+            <div>
+              <p class="text-xs text-accent-violet/80">コマンド実行 · npm install</p>
+              <p class="text-xs text-ink-muted mt-0.5">プロジェクトに必要なパッケージをすべてインストールするコマンドです。</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-lg border border-accent-amber/15 bg-accent-amber/5">
+            <span class="text-accent-amber font-bold text-xs shrink-0">~</span>
+            <div>
+              <p class="text-xs text-accent-amber/80">編集 · index.css</p>
+              <p class="text-xs text-ink-muted mt-0.5">Tailwind CSS の設定ファイルです。カスタムカラーやアニメーションが追加されました。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 機能 -->
+  <section id="features" class="px-6 py-20 max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <p class="text-xs text-accent-cyan/60 uppercase tracking-widest mb-3">Features</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-ink-primary">Claude Code の全操作を可視化</h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- ファイル操作 -->
+      <div class="card-hover p-5 rounded-xl border border-accent-green/15 bg-accent-green/5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg font-bold text-accent-green">+</span>
+          <span class="text-sm font-semibold text-accent-green">ファイル操作を解説</span>
+        </div>
+        <p class="text-xs text-ink-muted leading-relaxed">作成・編集されたコードが何をするのかを、専門用語なしで丁寧に説明します。</p>
+      </div>
+      <!-- コマンド -->
+      <div class="card-hover p-5 rounded-xl border border-accent-violet/15 bg-accent-violet/5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg font-bold text-accent-violet">&gt;</span>
+          <span class="text-sm font-semibold text-accent-violet">コマンドを解説</span>
+        </div>
+        <p class="text-xs text-ink-muted leading-relaxed">npm・git・その他コマンドの意味をリアルタイムで解説します。</p>
+      </div>
+      <!-- プロンプト -->
+      <div class="card-hover p-5 rounded-xl border border-accent-amber/15 bg-accent-amber/5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg font-bold text-accent-amber">⌨</span>
+          <span class="text-sm font-semibold text-accent-amber">プロンプトを診断</span>
+        </div>
+        <p class="text-xs text-ink-muted leading-relaxed">送ったお願い文の良し悪しを AI が採点。改善例と次のアクションも提案します。</p>
+      </div>
+      <!-- Claude 応答 -->
+      <div class="card-hover p-5 rounded-xl border border-accent-cyan/15 bg-accent-cyan/5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg font-bold text-accent-cyan">✦</span>
+          <span class="text-sm font-semibold text-accent-cyan">Claude の返答を解説</span>
+        </div>
+        <p class="text-xs text-ink-muted leading-relaxed">Claude の返答を噛み砕いて言い直し。専門用語にも補足説明を添えます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- プラン -->
+  <section id="plans" class="px-6 py-20" style="background: rgba(255,255,255,0.02)">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="text-xs text-accent-violet/60 uppercase tracking-widest mb-3">Plans</p>
+        <h2 class="text-2xl sm:text-3xl font-bold text-ink-primary">シンプルな料金</h2>
+        <p class="text-sm text-ink-muted mt-2">全プランで API キー不要（買い切りを除く）</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Free -->
+        <div class="card-hover p-5 rounded-xl border border-white/8" style="background: #13161e">
+          <p class="text-xs text-ink-muted mb-1">Free</p>
+          <p class="text-2xl font-bold text-ink-primary mb-1">¥0</p>
+          <p class="text-xs text-ink-muted mb-4">まず試してみたい方に</p>
+          <ul class="space-y-1.5 text-xs text-ink-muted">
+            <li class="flex items-center gap-2"><span class="text-accent-cyan">✓</span> API キー不要</li>
+            <li class="flex items-center gap-2"><span class="text-accent-cyan">✓</span> 全体の概要（5回まで）</li>
+          </ul>
+        </div>
+        <!-- Pro -->
+        <div class="card-hover p-5 rounded-xl border border-accent-cyan/30 bg-accent-cyan/5 relative glow-cyan">
+          <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10">おすすめ</div>
+          <p class="text-xs text-accent-cyan mb-1">プロ</p>
+          <p class="text-2xl font-bold text-accent-cyan mb-0.5">¥350</p>
+          <p class="text-xs text-ink-muted mb-4">/月</p>
+          <ul class="space-y-1.5 text-xs text-ink-muted">
+            <li class="flex items-center gap-2"><span class="text-accent-cyan">✓</span> API キー不要</li>
+            <li class="flex items-center gap-2"><span class="text-accent-cyan">✓</span> 全機能・無制限</li>
+            <li class="flex items-center gap-2"><span class="text-accent-cyan">✓</span> GPT-4o-mini 搭載</li>
+          </ul>
+        </div>
+        <!-- MAX -->
+        <div class="card-hover p-5 rounded-xl border border-accent-violet/30 bg-accent-violet/5 relative glow-violet">
+          <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-accent-violet border border-accent-violet/30 bg-accent-violet/10">MAX</div>
+          <p class="text-xs text-accent-violet mb-1">MAX</p>
+          <p class="text-2xl font-bold text-accent-violet mb-0.5">¥12,000</p>
+          <p class="text-xs text-ink-muted mb-4">/年</p>
+          <ul class="space-y-1.5 text-xs text-ink-muted">
+            <li class="flex items-center gap-2"><span class="text-accent-violet">✓</span> API キー不要</li>
+            <li class="flex items-center gap-2"><span class="text-accent-violet">✓</span> Claude Sonnet 搭載</li>
+            <li class="flex items-center gap-2"><span class="text-accent-violet">✓</span> 高精度な解説</li>
+          </ul>
+        </div>
+        <!-- 買い切り -->
+        <div class="card-hover p-5 rounded-xl border border-accent-amber/25 bg-accent-amber/5">
+          <p class="text-xs text-accent-amber mb-1">買い切り</p>
+          <p class="text-2xl font-bold text-accent-amber mb-0.5">¥980</p>
+          <p class="text-xs text-ink-muted mb-4">一回払い</p>
+          <ul class="space-y-1.5 text-xs text-ink-muted">
+            <li class="flex items-center gap-2"><span class="text-accent-amber">✓</span> 永久ライセンス</li>
+            <li class="flex items-center gap-2"><span class="text-accent-amber">✓</span> 全機能</li>
+            <li class="flex items-center gap-2"><span class="text-ink-muted/40">※</span> 別途 API キー必要</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- セットアップ -->
+  <section id="setup" class="px-6 py-20 max-w-2xl mx-auto">
+    <div class="text-center mb-12">
+      <p class="text-xs text-accent-amber/60 uppercase tracking-widest mb-3">Setup</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-ink-primary">3 ステップで始める</h2>
+    </div>
+
+    <div class="space-y-4">
+      <div class="flex gap-4 p-5 rounded-xl border border-accent-cyan/15 bg-accent-cyan/5">
+        <span class="text-accent-cyan font-bold text-sm shrink-0 w-6 text-center">1</span>
+        <div>
+          <p class="text-sm font-semibold text-accent-cyan mb-1">リポジトリをクローンして起動</p>
+          <div class="rounded-lg border border-white/8 p-3 mt-2" style="background: #0d0f14">
+            <p class="text-xs text-ink-muted">$ git clone https://github.com/d50557770-cyber/code-auxiliary</p>
+            <p class="text-xs text-ink-muted">$ cd code-auxiliary && npm install</p>
+            <p class="text-xs text-ink-muted">$ npm run dev</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 p-5 rounded-xl border border-accent-amber/15 bg-accent-amber/5">
+        <span class="text-accent-amber font-bold text-sm shrink-0 w-6 text-center">2</span>
+        <div>
+          <p class="text-sm font-semibold text-accent-amber mb-1">ブラウザでフック設定</p>
+          <p class="text-xs text-ink-muted leading-relaxed mt-1">
+            <code class="text-accent-cyan">localhost:3001</code> を開き、ガイドタブ →「フックを自動で設定する」ボタンを押すだけ。
+          </p>
+        </div>
+      </div>
+
+      <div class="flex gap-4 p-5 rounded-xl border border-accent-green/15 bg-accent-green/5">
+        <span class="text-accent-green font-bold text-sm shrink-0 w-6 text-center">3</span>
+        <div>
+          <p class="text-sm font-semibold text-accent-green mb-1">Claude Code に話しかける</p>
+          <p class="text-xs text-ink-muted leading-relaxed mt-1">
+            別のターミナルで Claude Code を使うと、操作がリアルタイムで表示されます。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="https://github.com/d50557770-cyber/code-auxiliary"
+         target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all glow-cyan text-white"
+         style="background: linear-gradient(135deg, #06b6d4, #0891b2)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.603-3.369-1.34-3.369-1.34-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.607.069-.607 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.026 2.747-1.026.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.577.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        GitHub でコードを見る
+      </a>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer class="border-t border-white/5 px-6 py-8 text-center">
+    <div class="flex items-center justify-center gap-2 mb-3">
+      <svg width="16" height="16" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2C14 2 15.5 10 22 14C15.5 18 14 26 14 26C14 26 12.5 18 6 14C12.5 10 14 2 14 2Z" fill="url(#footGrad)"/>
+        <defs><linearGradient id="footGrad" x1="6" y1="2" x2="22" y2="26"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      </svg>
+      <span class="text-sm font-bold text-ink-secondary">Code Auxiliary</span>
+    </div>
+    <p class="text-xs text-ink-muted/50">© 2025 Code Auxiliary. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
