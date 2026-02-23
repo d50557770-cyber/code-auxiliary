@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server/api.ts",
-    "build": "vite build",
+    "build": "echo 'using pre-built dist'",
     "preview": "vite preview",
     "start": "tsx server/api.ts"
   },
