@@ -1100,8 +1100,8 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), (req,
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV === "production") {
-    const distPath = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
+  const distPath = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
+  if (existsSync(join(distPath, "index.html"))) {
     app.use(express.static(distPath));
     app.get("*", (_req, res) => {
       res.sendFile(join(distPath, "index.html"));
