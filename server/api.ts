@@ -27,7 +27,7 @@ const ASSISTANT_DIR      = join(homedir(), ".code-explainer", "assistant-message
 const HISTORY_DIR        = join(homedir(), ".code-explainer", "history");
 const SESSIONS_PATH      = join(homedir(), ".code-explainer", "sessions.json");
 const CLAUDE_PROJECTS    = join(homedir(), ".claude", "projects");
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const MAX_LOGS = 100;
 const MAX_PRICE_ID      = "price_1T3ZxPB8xcXMCEIyr4dFJwdh"; // MAX年額プラン
 const BUY_ONCE_PRICE_ID = "price_1T34NiB8xcXMCEIySuTEemEb"; // 買い切り ¥980
@@ -1044,8 +1044,8 @@ app.post("/api/stripe/create-checkout-session", async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `http://localhost:${PORT}/upgrade?session_id={CHECKOUT_SESSION_ID}&status=success`,
-      cancel_url:  `http://localhost:${PORT}/upgrade?status=cancel`,
+      success_url: `${process.env.APP_URL || `http://localhost:${PORT}`}/upgrade?session_id={CHECKOUT_SESSION_ID}&status=success`,
+      cancel_url:  `${process.env.APP_URL || `http://localhost:${PORT}`}/upgrade?status=cancel`,
       locale: "ja",
     });
     res.json({ url: session.url });
@@ -1100,11 +1100,19 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), (req,
 });
 
 async function startServer() {
-  const vite = await createServer({
-    server: { middlewareMode: true },
-    appType: "spa",
-  });
-  app.use(vite.middlewares);
+  if (process.env.NODE_ENV === "production") {
+    const distPath = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
+    app.use(express.static(distPath));
+    app.get("*", (_req, res) => {
+      res.sendFile(join(distPath, "index.html"));
+    });
+  } else {
+    const vite = await createServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
+  }
   watchClaudeTranscripts();
   startHistoryBackup();
   app.listen(PORT, () => {

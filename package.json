@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx server/api.ts",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "npm run build && tsx server/api.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
