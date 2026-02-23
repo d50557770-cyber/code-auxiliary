@@ -241,12 +241,17 @@
     <div class="space-y-4">
       <div class="flex gap-4 p-5 rounded-xl border border-accent-cyan/15 bg-accent-cyan/5">
         <span class="text-accent-cyan font-bold text-sm shrink-0 w-6 text-center">1</span>
-        <div>
-          <p class="text-sm font-semibold text-accent-cyan mb-1">リポジトリをクローンして起動</p>
-          <div class="rounded-lg border border-white/8 p-3 mt-2" style="background: #0d0f14">
-            <p class="text-xs text-ink-muted">$ git clone https://github.com/d50557770-cyber/code-auxiliary</p>
-            <p class="text-xs text-ink-muted">$ cd code-auxiliary && npm install</p>
-            <p class="text-xs text-ink-muted">$ npm run dev</p>
+        <div class="w-full">
+          <p class="text-sm font-semibold text-accent-cyan mb-1">ターミナルに以下のコードを貼り付ける</p>
+          <div class="relative rounded-lg border border-white/8 p-3 mt-2" style="background: #0d0f14">
+            <pre id="setup-code" class="text-xs text-ink-muted leading-relaxed">git clone https://github.com/d50557770-cyber/code-auxiliary
+cd code-auxiliary && npm install
+npm run dev</pre>
+            <button onclick="copySetupCode()" id="copy-btn"
+              class="absolute top-2 right-2 text-xs px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary hover:border-white/30 transition-colors"
+              style="background: #1a1e28">
+              コピー
+            </button>
           </div>
         </div>
       </div>
@@ -294,6 +299,23 @@
     </div>
     <p class="text-xs text-ink-muted/50">© 2025 Code Auxiliary. All rights reserved.</p>
   </footer>
+
+  <script>
+    function copySetupCode() {
+      const code = document.getElementById('setup-code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'コピー済み';
+        btn.style.color = '#10b981';
+        btn.style.borderColor = '#10b981';
+        setTimeout(() => {
+          btn.textContent = 'コピー';
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 2000);
+      });
+    }
+  </script>
 
 </body>
 </html>
