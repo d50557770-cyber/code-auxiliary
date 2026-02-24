@@ -191,7 +191,10 @@ function dataAuthMiddleware(req: express.Request, res: express.Response, next: e
 
 // ローカルホストのみ許可（APIキー設定・フック設定など管理操作用）
 function localhostOnlyMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
-  if (isLocalhost(getClientIp(req))) {
+  const ip = getClientIp(req);
+  const host = (req.headers.host || "").split(":")[0];
+  const origin = (req.headers.origin || "").replace(/https?:\/\//, "").split(":")[0];
+  if (isLocalhost(ip) || host === "localhost" || host === "127.0.0.1" || origin === "localhost" || origin === "127.0.0.1") {
     next(); return;
   }
   res.status(403).json({ error: "この操作はローカルからのみ実行できます。" });
