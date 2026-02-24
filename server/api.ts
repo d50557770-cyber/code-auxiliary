@@ -174,16 +174,41 @@ app.use((_req, res, next) => {
 });
 
 // ─── データエンドポイント認証: セッションまたはローカルホストのみ許可 ──────────
-function dataAuthMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0].trim() || req.ip || "";
-  const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1";
+function getClientIp(req: express.Request): string {
+  return (req.headers["x-forwarded-for"] as string)?.split(",")[0].trim() || req.ip || "";
+}
 
-  // ローカルからのアクセス or セッショントークンがあればOK
-  if (isLocal || getSessionPlan(req)) {
-    next();
-    return;
+function isLocalhost(ip: string): boolean {
+  return ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1";
+}
+
+function dataAuthMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (isLocalhost(getClientIp(req)) || getSessionPlan(req)) {
+    next(); return;
   }
   res.status(401).json({ error: "認証が必要です。" });
+}
+
+// ローカルホストのみ許可（APIキー設定・フック設定など管理操作用）
+function localhostOnlyMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (isLocalhost(getClientIp(req))) {
+    next(); return;
+  }
+  res.status(403).json({ error: "この操作はローカルからのみ実行できます。" });
+}
+
+// 招待コードのブルートフォース対策: IPごと1分間10回まで
+const inviteRateLimitMap = new Map<string, { count: number; windowStart: number }>();
+function checkInviteRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = inviteRateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > 60_000) {
+    inviteRateLimitMap.set(ip, { count: 1, windowStart: now });
+    return true;
+  }
+  if (entry.count >= 10) return false;
+  entry.count++;
+  return true;
 }
 
 // 古いログを削除（最大100件保持）
@@ -266,7 +291,7 @@ app.get("/api/setup/status", (_req, res) => {
 });
 
 // POST /api/setup/keys - APIキーを .env に保存して即時反映
-app.post("/api/setup/keys", (req, res) => {
+app.post("/api/setup/keys", localhostOnlyMiddleware, (req, res) => {
   try {
     const { gemini, openai, anthropic } = req.body;
     const __dirnameDerived = dirname(fileURLToPath(import.meta.url));
@@ -316,7 +341,7 @@ app.post("/api/setup/keys", (req, res) => {
 });
 
 // POST /api/setup/hooks - ~/.claude/settings.json にフックを自動追加
-app.post("/api/setup/hooks", (_req, res) => {
+app.post("/api/setup/hooks", localhostOnlyMiddleware, (_req, res) => {
   try {
     const __dirnameDerived = dirname(fileURLToPath(import.meta.url));
     const hooksDir = join(__dirnameDerived, "..", "hooks");
@@ -379,7 +404,7 @@ app.post("/api/setup/hooks", (_req, res) => {
 });
 
 // GET /api/settings - APIキー設定状況を返す
-app.get("/api/settings", (_req, res) => {
+app.get("/api/settings", localhostOnlyMiddleware, (_req, res) => {
   const geminiKey    = process.env.GEMINI_API_KEY;
   const openaiKey    = process.env.OPENAI_API_KEY;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
@@ -701,7 +726,7 @@ app.get("/api/prompts/watch", dataAuthMiddleware, (req, res) => {
   req.on("close", () => clearInterval(interval));
 });
 
-app.post("/api/review-prompt", async (req, res) => {
+app.post("/api/review-prompt", aiAuthMiddleware, async (req, res) => {
   const { prompt: userPrompt } = req.body;
   if (!userPrompt || !userPrompt.trim()) {
     res.status(400).json({ error: "プロンプトを入力してください。" });
@@ -769,7 +794,7 @@ ${messagesText}`;
   }
 });
 
-app.post("/api/suggest-next-actions", async (req, res) => {
+app.post("/api/suggest-next-actions", aiAuthMiddleware, async (req, res) => {
   const { prompt: userPrompt } = req.body;
   if (!userPrompt?.trim()) {
     res.status(400).json({ error: "プロンプトを入力してください。" });
@@ -901,7 +926,7 @@ function saveToHistory(kind: "log" | "prompt" | "assistant", id: string, timesta
   } catch { /* ignore */ }
 }
 
-app.get("/api/history", (_req, res) => {
+app.get("/api/history", dataAuthMiddleware, (_req, res) => {
   try {
     if (!existsSync(HISTORY_DIR)) return res.json([]);
     const files = readdirSync(HISTORY_DIR).filter(f => f.endsWith(".json")).sort();
@@ -915,7 +940,7 @@ app.get("/api/history", (_req, res) => {
   }
 });
 
-app.get("/api/history/watch", (req, res) => {
+app.get("/api/history/watch", dataAuthMiddleware, (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
@@ -1086,7 +1111,14 @@ function incrementUsage(code: string) {
   try { writeFileSync(USED_CODES_PATH, JSON.stringify(counts, null, 2)); } catch { /* ignore */ }
 }
 
-app.post("/api/invite/redeem", (req, res) => {
+app.post("/api/invite/redeem", (req, res, next) => {
+  const ip = getClientIp(req);
+  if (!checkInviteRateLimit(ip)) {
+    res.status(429).json({ error: "試行回数が多すぎます。しばらく待ってから再試行してください。" });
+    return;
+  }
+  next();
+}, (req, res) => {
   const { code } = req.body as { code?: string };
   if (!code || typeof code !== "string") {
     return res.status(400).json({ ok: false, error: "コードを入力してください" });
