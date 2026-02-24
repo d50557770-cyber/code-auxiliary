@@ -190,11 +190,9 @@ function dataAuthMiddleware(req: express.Request, res: express.Response, next: e
 }
 
 // ローカルホストのみ許可（APIキー設定・フック設定など管理操作用）
+// ※ Host/Origin ヘッダーは偽造可能なので IP のみで判定する
 function localhostOnlyMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const ip = getClientIp(req);
-  const host = (req.headers.host || "").split(":")[0];
-  const origin = (req.headers.origin || "").replace(/https?:\/\//, "").split(":")[0];
-  if (isLocalhost(ip) || host === "localhost" || host === "127.0.0.1" || origin === "localhost" || origin === "127.0.0.1") {
+  if (isLocalhost(getClientIp(req))) {
     next(); return;
   }
   res.status(403).json({ error: "この操作はローカルからのみ実行できます。" });
@@ -434,7 +432,7 @@ app.get("/api/logs/watch", dataAuthMiddleware, (req, res) => {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "http://localhost:" + PORT,
   });
 
   const knownFiles = new Set<string>();
@@ -592,9 +590,11 @@ async function callAI(prompt: string, plan?: PlanType | null): Promise<string> {
   const hasOpenAI    = openaiKey    && openaiKey    !== "your-openai-key-here";
   const hasAnthropic = anthropicKey && anthropicKey !== "your-api-key-here";
 
+  const AI_TIMEOUT = 45_000; // 45秒でタイムアウト
+
   if (plan === "max") {
     if (!hasAnthropic) throw new Error("Anthropic APIキーが設定されていません。");
-    const client = new Anthropic({ apiKey: anthropicKey! });
+    const client = new Anthropic({ apiKey: anthropicKey!, timeout: AI_TIMEOUT, maxRetries: 0 });
     const message = await client.messages.create({
       model: "claude-sonnet-4-20250514", max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
@@ -604,7 +604,7 @@ async function callAI(prompt: string, plan?: PlanType | null): Promise<string> {
 
   if (plan === "pro") {
     if (!hasOpenAI) throw new Error("OpenAI APIキーが設定されていません。");
-    const client = new OpenAI({ apiKey: openaiKey! });
+    const client = new OpenAI({ apiKey: openaiKey!, timeout: AI_TIMEOUT, maxRetries: 0 });
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini", max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
@@ -614,7 +614,7 @@ async function callAI(prompt: string, plan?: PlanType | null): Promise<string> {
 
   if (plan === "buy_once") {
     if (hasOpenAI) {
-      const client = new OpenAI({ apiKey: openaiKey! });
+      const client = new OpenAI({ apiKey: openaiKey!, timeout: AI_TIMEOUT, maxRetries: 0 });
       const completion = await client.chat.completions.create({
         model: "gpt-4o-mini", max_tokens: 1024,
         messages: [{ role: "user", content: prompt }],
@@ -626,7 +626,7 @@ async function callAI(prompt: string, plan?: PlanType | null): Promise<string> {
       const result = await model.generateContent(prompt);
       return result.response.text();
     } else if (hasAnthropic) {
-      const client = new Anthropic({ apiKey: anthropicKey! });
+      const client = new Anthropic({ apiKey: anthropicKey!, timeout: AI_TIMEOUT, maxRetries: 0 });
       const message = await client.messages.create({
         model: "claude-sonnet-4-20250514", max_tokens: 1024,
         messages: [{ role: "user", content: prompt }],
@@ -637,7 +637,7 @@ async function callAI(prompt: string, plan?: PlanType | null): Promise<string> {
   }
 
   if (hasOpenAI) {
-    const client = new OpenAI({ apiKey: openaiKey! });
+    const client = new OpenAI({ apiKey: openaiKey!, timeout: AI_TIMEOUT, maxRetries: 0 });
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini", max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
@@ -649,7 +649,7 @@ async function callAI(prompt: string, plan?: PlanType | null): Promise<string> {
     const result = await model.generateContent(prompt);
     return result.response.text();
   } else if (hasAnthropic) {
-    const client = new Anthropic({ apiKey: anthropicKey! });
+    const client = new Anthropic({ apiKey: anthropicKey!, timeout: AI_TIMEOUT, maxRetries: 0 });
     const message = await client.messages.create({
       model: "claude-sonnet-4-20250514", max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
@@ -687,7 +687,7 @@ app.get("/api/prompts/watch", dataAuthMiddleware, (req, res) => {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "http://localhost:" + PORT,
   });
 
   res.write(`data: ${JSON.stringify({ type: "connected" })}\n\n`);
@@ -852,7 +852,7 @@ app.get("/api/assistant-messages/watch", dataAuthMiddleware, (req, res) => {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "http://localhost:" + PORT,
   });
   res.write(`data: ${JSON.stringify({ type: "connected" })}\n\n`);
   const knownFiles = new Set<string>();
@@ -948,7 +948,7 @@ app.get("/api/history/watch", dataAuthMiddleware, (req, res) => {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "http://localhost:" + PORT,
   });
   res.write(`data: ${JSON.stringify({ type: "connected" })}\n\n`);
   const knownFiles = new Set<string>();
