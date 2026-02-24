@@ -1230,15 +1230,20 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), (req,
 async function startServer() {
   const landingPath = join(dirname(fileURLToPath(import.meta.url)), "..", "landing");
   const distPath = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
-  if (existsSync(join(landingPath, "index.html"))) {
+  if (existsSync(join(distPath, "index.html"))) {
+    // dist/ を優先（アプリ本体）
+    app.use(express.static(distPath));
+    // ランディングページは /landing で提供
+    if (existsSync(join(landingPath, "index.html"))) {
+      app.use("/landing", express.static(landingPath));
+    }
+    app.get("*", (_req, res) => {
+      res.sendFile(join(distPath, "index.html"));
+    });
+  } else if (existsSync(join(landingPath, "index.html"))) {
     app.use(express.static(landingPath));
     app.get("*", (_req, res) => {
       res.sendFile(join(landingPath, "index.html"));
-    });
-  } else if (existsSync(join(distPath, "index.html"))) {
-    app.use(express.static(distPath));
-    app.get("*", (_req, res) => {
-      res.sendFile(join(distPath, "index.html"));
     });
   } else {
     const vite = await createServer({
