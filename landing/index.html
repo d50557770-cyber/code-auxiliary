@@ -296,18 +296,171 @@ npm run dev</pre>
   </section>
 
   <!-- フッター -->
-  <footer class="border-t border-white/5 px-6 py-8 text-center">
-    <div class="flex items-center justify-center gap-2 mb-3">
-      <svg width="16" height="16" viewBox="0 0 28 28" fill="none">
-        <path d="M14 2C14 2 15.5 10 22 14C15.5 18 14 26 14 26C14 26 12.5 18 6 14C12.5 10 14 2 14 2Z" fill="url(#footGrad)"/>
-        <defs><linearGradient id="footGrad" x1="6" y1="2" x2="22" y2="26"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
-      </svg>
-      <span class="text-sm font-bold text-ink-secondary">Code Auxiliary</span>
+  <footer class="border-t border-white/5 px-6 py-10">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+        <!-- ブランド -->
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2C14 2 15.5 10 22 14C15.5 18 14 26 14 26C14 26 12.5 18 6 14C12.5 10 14 2 14 2Z" fill="url(#footGrad)"/>
+            <defs><linearGradient id="footGrad" x1="6" y1="2" x2="22" y2="26"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+          </svg>
+          <span class="text-sm font-bold text-ink-secondary">Code Auxiliary</span>
+        </div>
+
+        <!-- リンク -->
+        <div class="flex flex-wrap items-center justify-center gap-5">
+          <a href="mailto:support@code-auxiliary.dev" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">お問い合わせ</a>
+          <button onclick="openModal('privacy-modal')" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">プライバシーポリシー</button>
+          <button onclick="openModal('refund-modal')" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">返金・キャンセルポリシー</button>
+          <button onclick="openModal('terms-modal')" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">利用規約</button>
+          <a href="https://github.com/d50557770-cyber/code-auxiliary" target="_blank" rel="noopener" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">GitHub</a>
+        </div>
+      </div>
+
+      <!-- 連絡先 -->
+      <div class="mt-6 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p class="text-xs text-ink-muted/50">© 2025 Code Auxiliary. All rights reserved.</p>
+        <p class="text-xs text-ink-muted/50">お問い合わせ: <a href="mailto:support@code-auxiliary.dev" class="text-accent-cyan/60 hover:text-accent-cyan transition-colors">support@code-auxiliary.dev</a></p>
+      </div>
     </div>
-    <p class="text-xs text-ink-muted/50">© 2025 Code Auxiliary. All rights reserved.</p>
   </footer>
 
+  <!-- ===== プライバシーポリシー モーダル ===== -->
+  <div id="privacy-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.75)">
+    <div class="relative max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-xl border border-white/10 p-6 custom-scrollbar" style="background: #13161e">
+      <button onclick="closeModal('privacy-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
+      <h2 class="text-base font-bold text-ink-primary mb-4">プライバシーポリシー</h2>
+      <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
+        <p>最終更新日：2025年1月1日</p>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">1. 収集する情報</h3>
+          <p>Code Auxiliary は、Claude Code のログ（ファイル操作・コマンド実行・プロンプト内容）をローカルで読み取り、AI 解説のためにサーバーへ送信します。個人を特定できる情報は収集しません。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">2. 情報の使用目的</h3>
+          <p>収集した情報は、AI による操作解説の生成のみに使用します。第三者へ販売・提供することはありません。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">3. データの保存</h3>
+          <p>ログデータはお使いのマシン上（~/.code-explainer/）に保存されます。サーバー側には解説生成に必要な最小限のデータのみを一時的に処理し、保存しません。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">4. セキュリティ</h3>
+          <p>API エンドポイントはレート制限・認証・セキュリティヘッダーで保護されています。通信は HTTPS で暗号化されます。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">5. お問い合わせ</h3>
+          <p>プライバシーに関するご質問は <a href="mailto:support@code-auxiliary.dev" class="text-accent-cyan">support@code-auxiliary.dev</a> までご連絡ください。</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 返金・キャンセルポリシー モーダル ===== -->
+  <div id="refund-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.75)">
+    <div class="relative max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-xl border border-white/10 p-6 custom-scrollbar" style="background: #13161e">
+      <button onclick="closeModal('refund-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
+      <h2 class="text-base font-bold text-ink-primary mb-4">返金・キャンセルポリシー</h2>
+      <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
+        <p>最終更新日：2025年1月1日</p>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">月額プラン（プロ ¥350/月）</h3>
+          <ul class="space-y-1 list-disc list-inside">
+            <li>いつでもキャンセル可能です。キャンセル後は次の請求日以降に請求されません。</li>
+            <li>すでに請求された期間の返金は原則行っておりません。</li>
+            <li>初回購入後 7 日以内のキャンセルは全額返金の対象となります。</li>
+          </ul>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">年額プラン（MAX ¥12,000/年）</h3>
+          <ul class="space-y-1 list-disc list-inside">
+            <li>購入後 14 日以内であれば全額返金いたします。</li>
+            <li>14 日経過後の返金は対応いたしかねます。</li>
+            <li>キャンセルはいつでも可能で、残存期間は引き続きご利用いただけます。</li>
+          </ul>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">買い切りプラン（¥980 一回払い）</h3>
+          <ul class="space-y-1 list-disc list-inside">
+            <li>購入後 7 日以内であれば全額返金いたします。</li>
+            <li>7 日経過後の返金は対応いたしかねます。</li>
+          </ul>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">返金申請方法</h3>
+          <p>返金希望の場合は <a href="mailto:support@code-auxiliary.dev" class="text-accent-cyan">support@code-auxiliary.dev</a> へ購入日・ご登録メールアドレスを添えてご連絡ください。3 営業日以内に対応いたします。</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 利用規約 モーダル ===== -->
+  <div id="terms-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.75)">
+    <div class="relative max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-xl border border-white/10 p-6 custom-scrollbar" style="background: #13161e">
+      <button onclick="closeModal('terms-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
+      <h2 class="text-base font-bold text-ink-primary mb-4">利用規約</h2>
+      <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
+        <p>最終更新日：2025年1月1日</p>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">1. サービスの概要</h3>
+          <p>Code Auxiliary は、Claude Code の操作をリアルタイムで解説する個人向けソフトウェアサービスです。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">2. 利用条件</h3>
+          <ul class="space-y-1 list-disc list-inside">
+            <li>本サービスは個人の学習・開発目的でのみご利用ください。</li>
+            <li>商用目的・再販・逆コンパイル・改ざんは禁止します。</li>
+            <li>本サービスを通じて違法行為を行うことを禁止します。</li>
+          </ul>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">3. サービスの変更・停止</h3>
+          <p>事前通知のうえでサービス内容の変更・終了を行う場合があります。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">4. 免責事項</h3>
+          <p>AI による解説は参考情報であり、正確性を保証するものではありません。本サービスの利用により生じた損害について、運営者は責任を負いません。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">5. 準拠法</h3>
+          <p>本規約は日本法に基づき解釈されます。</p>
+        </section>
+        <section>
+          <h3 class="text-ink-secondary font-semibold mb-1">6. お問い合わせ</h3>
+          <p><a href="mailto:support@code-auxiliary.dev" class="text-accent-cyan">support@code-auxiliary.dev</a></p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(6,182,212,0.2) transparent; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.2); border-radius: 3px; }
+  </style>
+
   <script>
+    function openModal(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+    // 背景クリックで閉じる
+    ['privacy-modal','refund-modal','terms-modal'].forEach(id => {
+      document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) closeModal(id);
+      });
+    });
+
     function copySetupCode() {
       const code = document.getElementById('setup-code').innerText;
       navigator.clipboard.writeText(code).then(() => {
