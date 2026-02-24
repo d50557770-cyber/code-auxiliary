@@ -182,7 +182,7 @@
       <div class="text-center mb-12">
         <p class="text-xs text-accent-violet/60 uppercase tracking-widest mb-3">Plans</p>
         <h2 class="text-2xl sm:text-3xl font-bold text-ink-primary">シンプルな料金</h2>
-        <p class="text-sm text-ink-muted mt-2">全プランで API キー不要（買い切りを除く）</p>
+        <p class="text-sm text-ink-muted mt-2">全プランで API キー不要（買い切りを除く）・全て税込価格</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -356,6 +356,49 @@ npm run dev</pre>
     </div>
   </section>
 
+  <!-- 販売情報 -->
+  <section class="px-6 py-12" style="background: rgba(255,255,255,0.015)">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-xs text-ink-muted/50 uppercase tracking-widest mb-6 text-center">販売情報</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl border border-white/6" style="background: #13161e">
+          <p class="text-[10px] text-ink-muted/50 uppercase tracking-widest mb-3">商品・サービス</p>
+          <dl class="space-y-2.5 text-xs">
+            <div class="flex gap-3">
+              <dt class="text-ink-muted shrink-0 w-24">販売者</dt>
+              <dd class="text-ink-secondary font-semibold">Taiga</dd>
+            </div>
+            <div class="flex gap-3">
+              <dt class="text-ink-muted shrink-0 w-24">販売内容</dt>
+              <dd class="text-ink-secondary">Claude Code 解説アプリ「Code Auxiliary」のアプリ利用権（サブスクリプション / 買い切りライセンス / デジタルコンテンツ）</dd>
+            </div>
+            <div class="flex gap-3">
+              <dt class="text-ink-muted shrink-0 w-24">価格</dt>
+              <dd class="text-ink-secondary">¥0（Free）/ ¥980/月（Pro）/ ¥12,000/年（MAX）/ ¥5,000 一回払い（買い切り）・全て税込</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="p-4 rounded-xl border border-white/6" style="background: #13161e">
+          <p class="text-[10px] text-ink-muted/50 uppercase tracking-widest mb-3">提供・返金</p>
+          <dl class="space-y-2.5 text-xs">
+            <div class="flex gap-3">
+              <dt class="text-ink-muted shrink-0 w-24">提供タイミング</dt>
+              <dd class="text-ink-secondary">決済完了後すぐにライセンスキーを発行・即時利用可能</dd>
+            </div>
+            <div class="flex gap-3">
+              <dt class="text-ink-muted shrink-0 w-24">返金条件</dt>
+              <dd class="text-ink-secondary">月額：初回購入後 7 日以内 / 年額：14 日以内 / 買い切り：7 日以内に全額返金。<button onclick="openModal('refund-modal')" class="text-accent-cyan/70 hover:text-accent-cyan underline">詳細はこちら</button></dd>
+            </div>
+            <div class="flex gap-3">
+              <dt class="text-ink-muted shrink-0 w-24">お問い合わせ</dt>
+              <dd class="text-ink-secondary"><a href="mailto:d50557770@gmail.com" class="text-accent-cyan/70 hover:text-accent-cyan">d50557770@gmail.com</a></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- フッター -->
   <footer class="border-t border-white/5 px-6 py-10">
     <div class="max-w-4xl mx-auto">
@@ -381,8 +424,8 @@ npm run dev</pre>
 
       <!-- 連絡先 -->
       <div class="mt-6 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p class="text-xs text-ink-muted/50">© 2025 Code Auxiliary. All rights reserved.</p>
-        <p class="text-xs text-ink-muted/50">お問い合わせ: <a href="mailto:d50557770@gmail.com" class="text-accent-cyan/60 hover:text-accent-cyan transition-colors">d50557770@gmail.com</a></p>
+        <p class="text-xs text-ink-muted/50">© 2026 Taiga / Code Auxiliary. All rights reserved.</p>
+        <p class="text-xs text-ink-muted/50">事業者: Taiga &nbsp;|&nbsp; <a href="mailto:d50557770@gmail.com" class="text-accent-cyan/60 hover:text-accent-cyan transition-colors">d50557770@gmail.com</a></p>
       </div>
     </div>
   </footer>
@@ -393,7 +436,7 @@ npm run dev</pre>
       <button onclick="closeModal('privacy-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
       <h2 class="text-base font-bold text-ink-primary mb-4">プライバシーポリシー</h2>
       <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
-        <p>最終更新日：2025年1月1日</p>
+        <p>最終更新日：2026年2月24日　／　事業者：Taiga</p>
         <section>
           <h3 class="text-ink-secondary font-semibold mb-1">1. 収集する情報</h3>
           <p>Code Auxiliary は、Claude Code のログ（ファイル操作・コマンド実行・プロンプト内容）をローカルで読み取り、AI 解説のためにサーバーへ送信します。個人を特定できる情報は収集しません。</p>
@@ -424,7 +467,7 @@ npm run dev</pre>
       <button onclick="closeModal('refund-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
       <h2 class="text-base font-bold text-ink-primary mb-4">返金・キャンセルポリシー</h2>
       <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
-        <p>最終更新日：2025年1月1日</p>
+        <p>最終更新日：2026年2月24日　／　事業者：Taiga</p>
         <section>
           <h3 class="text-ink-secondary font-semibold mb-1">月額プラン（Pro ¥980/月）</h3>
           <ul class="space-y-1 list-disc list-inside">
@@ -462,7 +505,7 @@ npm run dev</pre>
       <button onclick="closeModal('terms-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
       <h2 class="text-base font-bold text-ink-primary mb-4">利用規約</h2>
       <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
-        <p>最終更新日：2025年1月1日</p>
+        <p>最終更新日：2026年2月24日　／　事業者：Taiga</p>
         <section>
           <h3 class="text-ink-secondary font-semibold mb-1">1. サービスの概要</h3>
           <p>Code Auxiliary は、Claude Code の操作をリアルタイムで解説する個人向けソフトウェアサービスです。</p>
