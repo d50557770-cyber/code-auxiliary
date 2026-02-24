@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "releaseType": "major",
+  "releaseDate": "2026-02-24",
+  "notes": "初回リリース",
+  "notifyPlans": ["all"],
+  "updateCommand": "git pull && npm install && npm run dev"
+}
