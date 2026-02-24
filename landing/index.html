@@ -199,8 +199,8 @@
         <!-- Pro -->
         <div class="card-hover p-5 rounded-xl border border-accent-cyan/30 bg-accent-cyan/5 relative glow-cyan">
           <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-accent-cyan border border-accent-cyan/30 bg-accent-cyan/10">おすすめ</div>
-          <p class="text-xs text-accent-cyan mb-1">プロ</p>
-          <p class="text-2xl font-bold text-accent-cyan mb-0.5">¥350</p>
+          <p class="text-xs text-accent-cyan mb-1">Pro</p>
+          <p class="text-2xl font-bold text-accent-cyan mb-0.5">¥980</p>
           <p class="text-xs text-ink-muted mb-4">/月</p>
           <ul class="space-y-1.5 text-xs text-ink-muted">
             <li class="flex items-center gap-2"><span class="text-accent-cyan">✓</span> API キー不要</li>
@@ -223,7 +223,7 @@
         <!-- 買い切り -->
         <div class="card-hover p-5 rounded-xl border border-accent-amber/25 bg-accent-amber/5">
           <p class="text-xs text-accent-amber mb-1">買い切り</p>
-          <p class="text-2xl font-bold text-accent-amber mb-0.5">¥980</p>
+          <p class="text-2xl font-bold text-accent-amber mb-0.5">¥5,000</p>
           <p class="text-xs text-ink-muted mb-4">一回払い</p>
           <ul class="space-y-1.5 text-xs text-ink-muted">
             <li class="flex items-center gap-2"><span class="text-accent-amber">✓</span> 永久ライセンス</li>
@@ -232,8 +232,69 @@
           </ul>
         </div>
       </div>
+
+      <!-- 買い切りユーザー限定：バージョンアップデート -->
+      <div class="mt-6 rounded-xl border border-dashed border-accent-amber/30 overflow-hidden" style="background: rgba(245,158,11,0.03)">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
+          <div class="flex items-start gap-4">
+            <!-- 鍵アイコン -->
+            <div class="shrink-0 w-9 h-9 rounded-lg border border-accent-amber/25 bg-accent-amber/10 flex items-center justify-center text-accent-amber text-base">
+              🔒
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <p class="text-sm font-semibold text-accent-amber">バージョンアップデートプラン</p>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-accent-amber border border-accent-amber/30 bg-accent-amber/10">買い切り限定</span>
+              </div>
+              <p class="text-xs text-ink-muted leading-relaxed">買い切り購入者のみ加入できる月額プランです。新機能・改善アップデートを継続的に受け取れます。</p>
+              <ul class="mt-2 space-y-1 text-xs text-ink-muted">
+                <li class="flex items-center gap-2"><span class="text-accent-amber">✓</span> 新機能の優先アクセス</li>
+                <li class="flex items-center gap-2"><span class="text-accent-amber">✓</span> バグ修正・改善アップデート</li>
+                <li class="flex items-center gap-2"><span class="text-accent-amber">✓</span> いつでも解約可能</li>
+              </ul>
+            </div>
+          </div>
+          <div class="shrink-0 text-right sm:text-right ml-13 sm:ml-0">
+            <p class="text-xl font-bold text-accent-amber">¥1,000</p>
+            <p class="text-xs text-ink-muted mb-3">/月</p>
+            <button onclick="openModal('upgrade-modal')"
+              class="px-4 py-2 rounded-lg text-xs font-semibold border border-accent-amber/40 text-accent-amber hover:bg-accent-amber/10 transition-colors whitespace-nowrap">
+              詳細を見る →
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- ===== バージョンアップデートプラン モーダル ===== -->
+  <div id="upgrade-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.75)">
+    <div class="relative max-w-md w-full rounded-xl border border-accent-amber/25 p-6" style="background: #13161e">
+      <button onclick="closeModal('upgrade-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-lg">🔒</span>
+        <h2 class="text-base font-bold text-accent-amber">バージョンアップデートプラン</h2>
+      </div>
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-accent-amber/30 bg-accent-amber/10 text-accent-amber text-[10px] font-bold mb-4">
+        買い切りご購入者限定
+      </div>
+      <div class="mb-5">
+        <p class="text-2xl font-bold text-accent-amber">¥1,000<span class="text-sm font-normal text-ink-muted"> /月</span></p>
+        <p class="text-xs text-ink-muted mt-1">買い切り（¥5,000）を購入した方のみご加入いただけます。</p>
+      </div>
+      <ul class="space-y-2.5 text-xs text-ink-muted mb-6">
+        <li class="flex items-start gap-2"><span class="text-accent-amber mt-0.5">✓</span> 新機能・UI 改善の優先アクセス</li>
+        <li class="flex items-start gap-2"><span class="text-accent-amber mt-0.5">✓</span> バグ修正・セキュリティアップデート</li>
+        <li class="flex items-start gap-2"><span class="text-accent-amber mt-0.5">✓</span> いつでもキャンセル可（次月から停止）</li>
+        <li class="flex items-start gap-2"><span class="text-accent-amber mt-0.5">✓</span> 解約後も買い切り機能は永久に使用可能</li>
+      </ul>
+      <p class="text-xs text-ink-muted/60 mb-4">ご加入はアプリ内の「アップグレード」から行えます。買い切りライセンスコードが必要です。</p>
+      <button onclick="closeModal('upgrade-modal')"
+        class="w-full py-2.5 rounded-lg text-xs font-semibold border border-accent-amber/30 text-accent-amber hover:bg-accent-amber/10 transition-colors">
+        閉じる
+      </button>
+    </div>
+  </div>
 
   <!-- セットアップ -->
   <section id="setup" class="px-6 py-20 max-w-2xl mx-auto">
@@ -455,7 +516,7 @@ npm run dev</pre>
       document.body.style.overflow = '';
     }
     // 背景クリックで閉じる
-    ['privacy-modal','refund-modal','terms-modal'].forEach(id => {
+    ['privacy-modal','refund-modal','terms-modal','upgrade-modal'].forEach(id => {
       document.getElementById(id).addEventListener('click', function(e) {
         if (e.target === this) closeModal(id);
       });
