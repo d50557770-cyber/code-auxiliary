@@ -560,6 +560,13 @@ npm run dev</pre>
       });
     }
   </script>
+  <script>
+    // ハッシュ付きURLでも常にトップから表示
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname);
+      window.scrollTo(0, 0);
+    }
+  </script>
 
 </body>
 </html>
