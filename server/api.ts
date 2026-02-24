@@ -91,7 +91,65 @@ function getSessionPlan(req: express.Request): PlanType | null {
 }
 
 const app = express();
-app.use(express.json());
+// リクエストボディを50KBに制限（大量テキストによるコスト攻撃を防止）
+app.use(express.json({ limit: "50kb" }));
+
+// ─── セキュリティ: レートリミット & フリープラン制限 ─────────────────────────
+
+// IPごとのレートリミット: 1分間に60リクエストまで
+const rateLimitMap = new Map<string, { count: number; windowStart: number }>();
+const RATE_LIMIT_MAX = 60;
+const RATE_LIMIT_WINDOW = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+
+// フリープランのAI使用回数: IPごと・日次リセット・最大5回
+const freeUsageMap = new Map<string, { count: number; resetAt: number }>();
+const FREE_DAILY_LIMIT = 5;
+
+function checkFreeLimit(ip: string): boolean {
+  const now = Date.now();
+  const tomorrow = new Date();
+  tomorrow.setHours(24, 0, 0, 0);
+  const resetAt = tomorrow.getTime();
+
+  const entry = freeUsageMap.get(ip);
+  if (!entry || entry.resetAt <= now) {
+    freeUsageMap.set(ip, { count: 1, resetAt });
+    return true;
+  }
+  if (entry.count >= FREE_DAILY_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+// AIエンドポイント共通ミドルウェア
+function aiAuthMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0].trim() || req.ip || "unknown";
+
+  if (!checkRateLimit(ip)) {
+    res.status(429).json({ error: "リクエストが多すぎます。1分後に再試行してください。" });
+    return;
+  }
+
+  const plan = getSessionPlan(req);
+  if (!plan && !checkFreeLimit(ip)) {
+    res.status(429).json({ error: "本日の無料枠（5回）を使い切りました。アップグレードをご検討ください。" });
+    return;
+  }
+
+  next();
+}
 
 // 古いログを削除（最大100件保持）
 function pruneOldLogs() {
@@ -384,7 +442,7 @@ function buildExplainPrompt(context: string, settings: string[]): string {
 }
 
 // POST /api/explain-overview - トーク単位で解説（前トークの要約も受け取る）
-app.post("/api/explain-overview", async (req, res) => {
+app.post("/api/explain-overview", aiAuthMiddleware, async (req, res) => {
   const { logs, previousSummaries = [] } = req.body;
 
   if (!Array.isArray(logs) || logs.length === 0) {
@@ -419,7 +477,7 @@ ${logList}
 });
 
 // POST /api/explain - AI解説を生成
-app.post("/api/explain", async (req, res) => {
+app.post("/api/explain", aiAuthMiddleware, async (req, res) => {
   const { code, language, type, file, summary, settings = ["full"] } = req.body;
   const plan = getSessionPlan(req);
 
@@ -622,7 +680,7 @@ app.post("/api/review-prompt", async (req, res) => {
   }
 });
 
-app.post("/api/explain-batch", async (req, res) => {
+app.post("/api/explain-batch", aiAuthMiddleware, async (req, res) => {
   const { logs: entries, settings = ["full"] } = req.body;
   if (!Array.isArray(entries) || entries.length === 0) {
     res.status(400).json({ error: "ログがありません。" });
@@ -655,7 +713,7 @@ ${tasks.join("\n")}`;
   }
 });
 
-app.post("/api/explain-batch-assistant", async (req, res) => {
+app.post("/api/explain-batch-assistant", aiAuthMiddleware, async (req, res) => {
   const { messages: entries } = req.body;
   if (!Array.isArray(entries) || entries.length === 0) {
     res.status(400).json({ error: "メッセージがありません。" });
@@ -769,7 +827,7 @@ app.get("/api/assistant-messages/watch", (req, res) => {
   req.on("close", () => clearInterval(interval));
 });
 
-app.post("/api/explain-assistant", async (req, res) => {
+app.post("/api/explain-assistant", aiAuthMiddleware, async (req, res) => {
   const { id, message } = req.body;
   if (!message || !message.trim()) {
     res.status(400).json({ error: "メッセージが空です。" });
@@ -1100,8 +1158,14 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), (req,
 });
 
 async function startServer() {
+  const landingPath = join(dirname(fileURLToPath(import.meta.url)), "..", "landing");
   const distPath = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
-  if (existsSync(join(distPath, "index.html"))) {
+  if (existsSync(join(landingPath, "index.html"))) {
+    app.use(express.static(landingPath));
+    app.get("*", (_req, res) => {
+      res.sendFile(join(landingPath, "index.html"));
+    });
+  } else if (existsSync(join(distPath, "index.html"))) {
     app.use(express.static(distPath));
     app.get("*", (_req, res) => {
       res.sendFile(join(distPath, "index.html"));
