@@ -151,6 +151,41 @@ function aiAuthMiddleware(req: express.Request, res: express.Response, next: exp
   next();
 }
 
+// ─── セキュリティヘッダー（全レスポンス共通） ────────────────────────────────
+app.use((_req, res, next) => {
+  // ブラウザのコンテンツスニッフィングを無効化
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  // クリックジャッキング対策
+  res.setHeader("X-Frame-Options", "DENY");
+  // XSS対策
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  // キャッシュ禁止（APIレスポンスを他のユーザーのキャッシュに残さない）
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  // CORS: localhostからのリクエストのみ許可
+  const origin = _req.headers.origin || "";
+  if (origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-pro-token");
+  }
+  if (_req.method === "OPTIONS") { res.status(204).end(); return; }
+  next();
+});
+
+// ─── データエンドポイント認証: セッションまたはローカルホストのみ許可 ──────────
+function dataAuthMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0].trim() || req.ip || "";
+  const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1";
+
+  // ローカルからのアクセス or セッショントークンがあればOK
+  if (isLocal || getSessionPlan(req)) {
+    next();
+    return;
+  }
+  res.status(401).json({ error: "認証が必要です。" });
+}
+
 // 古いログを削除（最大100件保持）
 function pruneOldLogs() {
   if (!existsSync(LOG_DIR)) return;
@@ -192,7 +227,7 @@ function getAllLogs() {
 }
 
 // DELETE /api/clear-all - ログ・プロンプト・応答を全削除
-app.delete("/api/clear-all", (_req, res) => {
+app.delete("/api/clear-all", dataAuthMiddleware, (_req, res) => {
   try {
     for (const dir of [LOG_DIR, PROMPT_DIR, ASSISTANT_DIR]) {
       if (!existsSync(dir)) continue;
@@ -356,7 +391,7 @@ app.get("/api/settings", (_req, res) => {
 });
 
 // GET /api/logs - 全ログ取得
-app.get("/api/logs", (_req, res) => {
+app.get("/api/logs", dataAuthMiddleware, (_req, res) => {
   try {
     const logs = getAllLogs();
     res.json(logs);
@@ -366,7 +401,7 @@ app.get("/api/logs", (_req, res) => {
 });
 
 // GET /api/logs/watch - SSE で新規ログをリアルタイム配信
-app.get("/api/logs/watch", (req, res) => {
+app.get("/api/logs/watch", dataAuthMiddleware, (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
@@ -605,7 +640,7 @@ function buildReviewPrompt(userPrompt: string): string {
 ${userPrompt}`;
 }
 
-app.get("/api/prompts", (_req, res) => {
+app.get("/api/prompts", dataAuthMiddleware, (_req, res) => {
   try {
     if (!existsSync(PROMPT_DIR)) return res.json([]);
     const files = readdirSync(PROMPT_DIR).filter(f => f.endsWith(".json")).sort();
@@ -619,7 +654,7 @@ app.get("/api/prompts", (_req, res) => {
   }
 });
 
-app.get("/api/prompts/watch", (req, res) => {
+app.get("/api/prompts/watch", dataAuthMiddleware, (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
@@ -770,7 +805,7 @@ Claude Code の返答:
 ${message.slice(0, 3000)}`;
 }
 
-app.get("/api/assistant-messages", (_req, res) => {
+app.get("/api/assistant-messages", dataAuthMiddleware, (_req, res) => {
   try {
     if (!existsSync(ASSISTANT_DIR)) return res.json([]);
     const files = readdirSync(ASSISTANT_DIR).filter(f => f.endsWith(".json")).sort();
@@ -784,7 +819,7 @@ app.get("/api/assistant-messages", (_req, res) => {
   }
 });
 
-app.get("/api/assistant-messages/watch", (req, res) => {
+app.get("/api/assistant-messages/watch", dataAuthMiddleware, (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
