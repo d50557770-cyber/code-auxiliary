@@ -10,7 +10,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { mono: ['"JetBrains Mono"', 'Menlo', 'monospace'] },
+          fontFamily: { mono: ['"JetBrains Mono"', 'Menlo', 'Consolas', '"Courier New"', 'monospace'] },
           colors: {
             surface: { 0: '#0d0f14', 1: '#13161e', 2: '#1a1e28' },
             ink: { primary: '#e2e8f0', secondary: '#94a3b8', muted: '#64748b' },
@@ -28,7 +28,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { background: #0d0f14; }
+    body { background: #0d0f14; scrollbar-width: thin; scrollbar-color: rgba(6,182,212,0.2) transparent; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(6,182,212,0.4); }
     .dot-grid { background-image: radial-gradient(circle, #ffffff08 1px, transparent 1px); background-size: 24px 24px; }
     .glow-cyan { box-shadow: 0 0 60px -10px rgba(6,182,212,0.3); }
     .glow-violet { box-shadow: 0 0 60px -10px rgba(139,92,246,0.3); }
@@ -253,6 +257,9 @@ npm run dev</pre>
               コピー
             </button>
           </div>
+          <p class="text-xs text-ink-muted/50 mt-2">
+            ⚠️ Windows の方は <a href="https://learn.microsoft.com/ja-jp/windows/wsl/install" target="_blank" rel="noopener" class="text-accent-cyan/70 hover:text-accent-cyan underline">WSL</a> が必要です。Mac / Linux はそのまま動きます。
+          </p>
         </div>
       </div>
 
