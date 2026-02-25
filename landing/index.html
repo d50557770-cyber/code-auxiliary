@@ -318,6 +318,17 @@
               <button onclick="copyCmd('win-wsl-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
             </div>
             <p class="text-[10px] text-ink-muted/40 mt-1">完了後に PC を再起動してください。</p>
+            <!-- ユーザー名エラーのトラブルシューティング -->
+            <div class="rounded-lg border border-accent-amber/20 bg-accent-amber/4 p-3 mt-3">
+              <p class="text-[10px] text-accent-amber/80 font-semibold mb-1.5">⚠ 「Invalid username」と表示された場合</p>
+              <p class="text-xs text-ink-muted leading-relaxed mb-2">Ubuntu の初回起動時にユーザー名を求められます。<span class="text-ink-secondary">小文字英字のみ</span>のシンプルな名前（例: <code class="text-accent-cyan">taiga</code>）を入力して Enter してください。</p>
+              <ul class="text-xs text-ink-muted/70 space-y-0.5 list-disc list-inside">
+                <li>使えるのは <span class="text-ink-secondary">小文字英字・数字・_ ・-</span> のみ</li>
+                <li>大文字・スペース・日本語は使用不可</li>
+                <li>コマンドをそのまま貼り付けないこと</li>
+              </ul>
+              <p class="text-[10px] text-ink-muted/50 mt-2">次にパスワードを2回入力します（入力しても画面には表示されません）。</p>
+            </div>
           </div>
 
           <!-- Step 2 -->
