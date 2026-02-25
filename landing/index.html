@@ -333,18 +333,25 @@
 
           <!-- Step 2 -->
           <div class="mb-4">
-            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 2 — Ubuntu を開いて Node.js をインストール</p>
-            <p class="text-xs text-ink-muted leading-relaxed mb-2">スタートメニューから「Ubuntu」を開き、以下を順に実行してください。</p>
-            <div class="rounded-lg border border-white/8 p-3 space-y-2" style="background: #0d0f14">
-              <div class="flex items-center gap-2">
-                <code class="text-xs text-accent-cyan flex-1 break-all" id="win-node-cmd1">curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -</code>
-                <button onclick="copyCmd('win-node-cmd1', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 2 — Node.js と Git をインストール</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">Ubuntu ターミナルで以下の2つを順番に実行してください。<code class="text-accent-cyan">sudo</code> を使うためパスワードを求められることがあります。</p>
+            <div class="rounded-lg border border-white/8 p-3 space-y-3" style="background: #0d0f14">
+              <div>
+                <p class="text-[10px] text-ink-muted/50 mb-1">① Node.js のリポジトリを追加</p>
+                <div class="flex items-center gap-2">
+                  <code class="text-xs text-accent-cyan flex-1 break-all" id="win-node-cmd1">curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -</code>
+                  <button onclick="copyCmd('win-node-cmd1', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <code class="text-xs text-accent-cyan flex-1 break-all" id="win-node-cmd2">sudo apt-get install -y nodejs git</code>
-                <button onclick="copyCmd('win-node-cmd2', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+              <div>
+                <p class="text-[10px] text-ink-muted/50 mb-1">② Node.js と Git をインストール</p>
+                <div class="flex items-center gap-2">
+                  <code class="text-xs text-accent-cyan flex-1 break-all" id="win-node-cmd2">sudo apt-get install -y nodejs git</code>
+                  <button onclick="copyCmd('win-node-cmd2', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+                </div>
               </div>
             </div>
+            <p class="text-[10px] text-ink-muted/40 mt-1">完了後 <code class="text-accent-cyan/60">node -v</code> と入力してバージョンが表示されれば成功です。</p>
           </div>
 
           <!-- Step 3 -->
