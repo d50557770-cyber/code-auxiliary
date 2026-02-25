@@ -419,15 +419,11 @@ npm run dev</pre>
           </dl>
         </div>
         <div class="p-4 rounded-xl border border-white/6" style="background: #13161e">
-          <p class="text-[10px] text-ink-muted/50 uppercase tracking-widest mb-3">提供・返金</p>
+          <p class="text-[10px] text-ink-muted/50 uppercase tracking-widest mb-3">提供・お問い合わせ</p>
           <dl class="space-y-2.5 text-xs">
             <div class="flex gap-3">
               <dt class="text-ink-muted shrink-0 w-24">提供タイミング</dt>
               <dd class="text-ink-secondary">決済完了後すぐにライセンスキーを発行・即時利用可能</dd>
-            </div>
-            <div class="flex gap-3">
-              <dt class="text-ink-muted shrink-0 w-24">返金条件</dt>
-              <dd class="text-ink-secondary">月額（Pro）：初回購入後 7 日以内 / 買い切り：7 日以内に全額返金。<button onclick="openModal('refund-modal')" class="text-accent-cyan/70 hover:text-accent-cyan underline">詳細はこちら</button></dd>
             </div>
             <div class="flex gap-3">
               <dt class="text-ink-muted shrink-0 w-24">お問い合わせ</dt>
@@ -456,7 +452,7 @@ npm run dev</pre>
         <div class="flex flex-wrap items-center justify-center gap-5">
           <a href="mailto:d50557770@gmail.com" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">お問い合わせ</a>
           <button onclick="openModal('privacy-modal')" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">プライバシーポリシー</button>
-          <button onclick="openModal('refund-modal')" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">返金・キャンセルポリシー</button>
+
           <button onclick="openModal('terms-modal')" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">利用規約</button>
           <a href="https://github.com/d50557770-cyber/code-auxiliary" target="_blank" rel="noopener" class="text-xs text-ink-muted hover:text-ink-secondary transition-colors">GitHub</a>
         </div>
@@ -496,36 +492,6 @@ npm run dev</pre>
         <section>
           <h3 class="text-ink-secondary font-semibold mb-1">5. お問い合わせ</h3>
           <p>プライバシーに関するご質問は <a href="mailto:d50557770@gmail.com" class="text-accent-cyan">d50557770@gmail.com</a> までご連絡ください。</p>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== 返金・キャンセルポリシー モーダル ===== -->
-  <div id="refund-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.75)">
-    <div class="relative max-w-2xl w-full max-h-[85vh] overflow-y-auto rounded-xl border border-white/10 p-6 custom-scrollbar" style="background: #13161e">
-      <button onclick="closeModal('refund-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
-      <h2 class="text-base font-bold text-ink-primary mb-4">返金・キャンセルポリシー</h2>
-      <div class="text-xs text-ink-muted space-y-4 leading-relaxed">
-        <p>最終更新日：2026年2月24日　／　事業者：Taiga</p>
-        <section>
-          <h3 class="text-ink-secondary font-semibold mb-1">月額プラン（Pro ¥980/月）</h3>
-          <ul class="space-y-1 list-disc list-inside">
-            <li>いつでもキャンセル可能です。キャンセル後は次の請求日以降に請求されません。</li>
-            <li>すでに請求された期間の返金は原則行っておりません。</li>
-            <li>初回購入後 7 日以内のキャンセルは全額返金の対象となります。</li>
-          </ul>
-        </section>
-        <section>
-          <h3 class="text-ink-secondary font-semibold mb-1">買い切りプラン（¥5,000 一回払い）</h3>
-          <ul class="space-y-1 list-disc list-inside">
-            <li>購入後 7 日以内であれば全額返金いたします。</li>
-            <li>7 日経過後の返金は対応いたしかねます。</li>
-          </ul>
-        </section>
-        <section>
-          <h3 class="text-ink-secondary font-semibold mb-1">返金申請方法</h3>
-          <p>返金希望の場合は <a href="mailto:d50557770@gmail.com" class="text-accent-cyan">d50557770@gmail.com</a> へ購入日・ご登録メールアドレスを添えてご連絡ください。3 営業日以内に対応いたします。</p>
         </section>
       </div>
     </div>
@@ -591,7 +557,7 @@ npm run dev</pre>
       document.body.style.overflow = '';
     }
     // 背景クリックで閉じる
-    ['privacy-modal','refund-modal','terms-modal','upgrade-modal','install-modal'].forEach(id => {
+    ['privacy-modal','terms-modal','upgrade-modal','install-modal'].forEach(id => {
       document.getElementById(id).addEventListener('click', function(e) {
         if (e.target === this) closeModal(id);
       });
