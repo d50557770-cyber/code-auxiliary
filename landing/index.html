@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <!-- ハッシュ付きURLでもトップから表示: DOMパース前にハッシュを消す -->
+  <script>if (window.location.hash) history.replaceState(null, '', window.location.pathname);</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Code Auxiliary — Claude Code をもっと深く理解する</title>
   <meta name="description" content="Claude Code が何をしているかをリアルタイムで解説。ファイル操作・コマンド・プロンプトを初心者にもわかりやすい日本語で表示します。" />
@@ -558,13 +560,6 @@ npm run dev</pre>
           btn.style.borderColor = '';
         }, 2000);
       });
-    }
-  </script>
-  <script>
-    // ハッシュ付きURLでも常にトップから表示
-    if (window.location.hash) {
-      history.replaceState(null, '', window.location.pathname);
-      window.scrollTo(0, 0);
     }
   </script>
 
