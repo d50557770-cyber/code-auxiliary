@@ -240,51 +240,137 @@
 
   <!-- ===== インストール モーダル ===== -->
   <div id="install-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.8)">
-    <div class="relative max-w-md w-full rounded-xl border border-accent-cyan/25 p-6" style="background: #13161e">
-      <button onclick="closeModal('install-modal')" class="absolute top-4 right-4 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
+    <div class="relative max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-xl border border-accent-cyan/25 custom-scrollbar" style="background: #13161e">
+      <button onclick="closeModal('install-modal')" class="sticky top-4 float-right mr-4 z-10 text-ink-muted hover:text-ink-primary text-lg leading-none">✕</button>
 
-      <!-- ヘッダー -->
-      <div class="flex items-center gap-2.5 mb-2">
-        <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
-          <path d="M14 2C14 2 15.5 10 22 14C15.5 18 14 26 14 26C14 26 12.5 18 6 14C12.5 10 14 2 14 2Z" fill="url(#instGrad)"/>
-          <defs><linearGradient id="instGrad" x1="6" y1="2" x2="22" y2="26"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
-        </svg>
-        <h2 class="text-base font-bold text-ink-primary">Code Auxiliary をインストール</h2>
-      </div>
-      <p class="text-xs text-ink-muted mb-6 leading-relaxed">ボタンを押してスクリプトをダウンロードし、ターミナルで実行するだけで自動セットアップが完了します。</p>
+      <div class="p-6">
+        <!-- ヘッダー -->
+        <div class="flex items-center gap-2.5 mb-1">
+          <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2C14 2 15.5 10 22 14C15.5 18 14 26 14 26C14 26 12.5 18 6 14C12.5 10 14 2 14 2Z" fill="url(#instGrad)"/>
+            <defs><linearGradient id="instGrad" x1="6" y1="2" x2="22" y2="26"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+          </svg>
+          <h2 class="text-base font-bold text-ink-primary">Code Auxiliary をインストール</h2>
+        </div>
+        <p class="text-xs text-ink-muted mb-5 leading-relaxed">OS を選んでステップに沿って進めてください。</p>
 
-      <!-- インストールボタン -->
-      <a href="install.sh"
-         download="install.sh"
-         class="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-xl text-sm font-semibold text-white mb-4 transition-all glow-cyan"
-         style="background: linear-gradient(135deg, #06b6d4, #0891b2)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-        install.sh をダウンロード
-      </a>
+        <!-- OS タブ -->
+        <div class="flex gap-1 p-1 rounded-lg mb-6" style="background: #0d0f14">
+          <button id="tab-mac" onclick="switchInstallTab('mac')"
+            class="flex-1 py-2 rounded-md text-xs font-semibold transition-all text-ink-primary"
+            style="background: #1a2535">Mac</button>
+          <button id="tab-win" onclick="switchInstallTab('win')"
+            class="flex-1 py-2 rounded-md text-xs font-semibold transition-all text-ink-muted">Windows</button>
+        </div>
 
-      <!-- 実行コマンド -->
-      <div class="rounded-lg border border-white/8 p-3 mb-5" style="background: #0d0f14">
-        <p class="text-[10px] text-ink-muted/50 mb-1.5">ダウンロード後、ターミナルで実行：</p>
-        <div class="flex items-center gap-2">
-          <code id="run-cmd" class="text-xs text-accent-cyan flex-1">bash ~/Downloads/install.sh</code>
-          <button onclick="copyRunCmd()" id="run-copy-btn"
-            class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary hover:border-white/30 transition-colors shrink-0"
-            style="background: #1a1e28">コピー</button>
+        <!-- ===== Mac ===== -->
+        <div id="install-mac">
+
+          <!-- Step 1 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 1 — Node.js をインストール（まだの方）</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">ターミナルで以下を実行するか、<a href="https://nodejs.org" target="_blank" rel="noopener" class="text-accent-cyan underline">nodejs.org</a> からインストーラーをダウンロードしてください。</p>
+            <div class="rounded-lg border border-white/8 p-3 flex items-center gap-2" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1" id="mac-node-cmd">brew install node</code>
+              <button onclick="copyCmd('mac-node-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-[10px] text-ink-muted/40 mt-1">※ Homebrew が未インストールの場合は <a href="https://brew.sh" target="_blank" rel="noopener" class="text-accent-cyan/60 underline">brew.sh</a> から先にインストール</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 2 — ターミナルを開いてインストール</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">Spotlight（⌘+Space）で「Terminal」と検索して開き、以下を貼り付けて Enter。</p>
+            <div class="rounded-lg border border-white/8 p-3 flex items-center gap-2" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1 break-all" id="mac-install-cmd">curl -fsSL https://landing-one-gold-80.vercel.app/install.sh | bash</code>
+              <button onclick="copyCmd('mac-install-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-xs text-ink-muted/50 mt-2 leading-relaxed">インストールが完了すると自動でサーバーが起動し、ブラウザで <span class="text-accent-cyan">http://localhost:3001</span> が開きます。</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 3 — Claude Code を起動して使い始める</p>
+            <p class="text-xs text-ink-muted leading-relaxed">別のターミナルウィンドウを開いて <code class="text-accent-cyan">claude</code> と入力するだけで、Code Auxiliary が自動で解説を始めます。</p>
+          </div>
+
+          <!-- 次回以降の起動 -->
+          <div class="rounded-lg border border-accent-cyan/10 bg-accent-cyan/3 p-3 mb-2">
+            <p class="text-[10px] text-accent-cyan/70 uppercase tracking-widest mb-2">次回以降の起動</p>
+            <div class="rounded border border-white/8 p-2 flex items-center gap-2 mb-1" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1" id="mac-start-cmd">cd ~/code-auxiliary && npm start</code>
+              <button onclick="copyCmd('mac-start-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-[10px] text-ink-muted/50">ターミナルで上記を実行 → <span class="text-accent-cyan/70">http://localhost:3001</span> をブラウザで開く</p>
+          </div>
+
+        </div>
+
+        <!-- ===== Windows ===== -->
+        <div id="install-win" class="hidden">
+
+          <!-- Step 1 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 1 — WSL をインストール</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">スタートメニューで「PowerShell」を右クリック →「管理者として実行」→ 以下を貼り付けて Enter。</p>
+            <div class="rounded-lg border border-white/8 p-3 flex items-center gap-2" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1" id="win-wsl-cmd">wsl --install</code>
+              <button onclick="copyCmd('win-wsl-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-[10px] text-ink-muted/40 mt-1">完了後に PC を再起動してください。</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 2 — Ubuntu を開いて Node.js をインストール</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">スタートメニューから「Ubuntu」を開き、以下を順に実行してください。</p>
+            <div class="rounded-lg border border-white/8 p-3 space-y-2" style="background: #0d0f14">
+              <div class="flex items-center gap-2">
+                <code class="text-xs text-accent-cyan flex-1 break-all" id="win-node-cmd1">curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -</code>
+                <button onclick="copyCmd('win-node-cmd1', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <code class="text-xs text-accent-cyan flex-1 break-all" id="win-node-cmd2">sudo apt-get install -y nodejs git</code>
+                <button onclick="copyCmd('win-node-cmd2', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 3 — Code Auxiliary をインストール</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">同じ Ubuntu ターミナルで以下を実行。</p>
+            <div class="rounded-lg border border-white/8 p-3 flex items-center gap-2" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1 break-all" id="win-install-cmd">curl -fsSL https://landing-one-gold-80.vercel.app/install.sh | bash</code>
+              <button onclick="copyCmd('win-install-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-xs text-ink-muted/50 mt-2 leading-relaxed">完了後、Windows のブラウザで <span class="text-accent-cyan">http://localhost:3001</span> を開いてください。</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="mb-4">
+            <p class="text-[10px] text-accent-cyan/60 uppercase tracking-widest mb-2">Step 4 — Claude Code を起動して使い始める</p>
+            <p class="text-xs text-ink-muted leading-relaxed">別の Ubuntu ウィンドウを開いて <code class="text-accent-cyan">claude</code> と入力するだけで、Code Auxiliary が自動で解説を始めます。</p>
+          </div>
+
+          <!-- 次回以降の起動 -->
+          <div class="rounded-lg border border-accent-cyan/10 bg-accent-cyan/3 p-3 mb-2">
+            <p class="text-[10px] text-accent-cyan/70 uppercase tracking-widest mb-2">次回以降の起動</p>
+            <div class="rounded border border-white/8 p-2 flex items-center gap-2 mb-1" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1" id="win-start-cmd">cd ~/code-auxiliary && npm start</code>
+              <button onclick="copyCmd('win-start-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-[10px] text-ink-muted/50">Ubuntu で上記を実行 → Windows ブラウザで <span class="text-accent-cyan/70">http://localhost:3001</span> を開く</p>
+          </div>
+
+        </div>
+
+        <!-- 共通フッター -->
+        <div class="mt-5 pt-4 border-t border-white/5 flex items-center justify-between">
+          <a href="install.sh" download="install.sh" class="text-xs text-ink-muted/50 hover:text-ink-muted transition-colors underline underline-offset-2">install.sh を直接ダウンロード</a>
+          <span class="text-[10px] text-ink-muted/30">✓ 無料 &nbsp;·&nbsp; Node.js 18+ 必要</span>
         </div>
       </div>
-
-      <!-- 動作環境 -->
-      <div class="flex items-center gap-4 text-[10px] text-ink-muted/50 mb-5">
-        <span>✓ Mac / Linux 対応</span>
-        <span>✓ Node.js 18+ 必要</span>
-        <span>✓ 無料</span>
-      </div>
-
-      <p class="text-[10px] text-ink-muted/40 text-center">Windows の方は <a href="https://learn.microsoft.com/ja-jp/windows/wsl/install" target="_blank" rel="noopener" class="text-accent-cyan/60 hover:text-accent-cyan underline">WSL</a> が必要です</p>
     </div>
   </div>
 
@@ -551,6 +637,42 @@ npm run dev</pre>
         btn.textContent = 'コピー済み';
         btn.style.color = '#10b981';
         setTimeout(() => { btn.textContent = 'コピー'; btn.style.color = ''; }, 2000);
+      });
+    }
+
+    function switchInstallTab(os) {
+      const mac = document.getElementById('install-mac');
+      const win = document.getElementById('install-win');
+      const tabMac = document.getElementById('tab-mac');
+      const tabWin = document.getElementById('tab-win');
+      if (os === 'mac') {
+        mac.classList.remove('hidden');
+        win.classList.add('hidden');
+        tabMac.style.background = '#1a2535';
+        tabMac.classList.replace('text-ink-muted', 'text-ink-primary');
+        tabWin.style.background = '';
+        tabWin.classList.replace('text-ink-primary', 'text-ink-muted');
+      } else {
+        win.classList.remove('hidden');
+        mac.classList.add('hidden');
+        tabWin.style.background = '#1a2535';
+        tabWin.classList.replace('text-ink-muted', 'text-ink-primary');
+        tabMac.style.background = '';
+        tabMac.classList.replace('text-ink-primary', 'text-ink-muted');
+      }
+    }
+
+    function copyCmd(id, btn) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'コピー済み';
+        btn.style.color = '#10b981';
+        btn.style.borderColor = '#10b981';
+        setTimeout(() => {
+          btn.textContent = 'コピー';
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 2000);
       });
     }
 
