@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>特定商取引法に基づく表示 — Code Auxiliary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "surface-base": "#0d0f16",
+            "surface-1": "#13161e",
+            "ink-primary": "#e8eaf0",
+            "ink-secondary": "#9ca3b0",
+            "ink-muted": "#5c6478",
+            "accent-cyan": "#06b6d4",
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #0d0f16; }
+  </style>
+</head>
+<body class="min-h-screen text-ink-secondary font-sans">
+
+  <!-- ヘッダー -->
+  <header class="border-b border-white/5 px-6 py-4">
+    <div class="max-w-3xl mx-auto flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 text-ink-muted hover:text-ink-primary transition-colors text-sm">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        トップへ戻る
+      </a>
+      <span class="text-ink-muted/30 text-xs">|</span>
+      <span class="text-xs text-ink-muted">Code Auxiliary</span>
+    </div>
+  </header>
+
+  <!-- メイン -->
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <h1 class="text-xl font-bold text-ink-primary mb-2">特定商取引法に基づく表示</h1>
+    <p class="text-xs text-ink-muted mb-10">最終更新日：2026年2月25日</p>
+
+    <div class="rounded-xl border border-white/8 overflow-hidden" style="background: #13161e">
+      <table class="w-full text-sm">
+        <tbody>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium w-40 align-top shrink-0">販売業者</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              <!-- ★ 氏名をここに記入してください ★ -->
+              <span class="text-accent-cyan/60 text-xs">［氏名を記入してください］</span>
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">運営統括責任者</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              <!-- ★ 氏名をここに記入してください ★ -->
+              <span class="text-accent-cyan/60 text-xs">［氏名を記入してください］</span>
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">住所</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              <!-- ★ 住所をここに記入してください（都道府県・市区町村・番地） ★ -->
+              <span class="text-accent-cyan/60 text-xs">［住所を記入してください］</span>
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">電話番号</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              お問い合わせはメールにて受け付けております。メールでのご連絡後、必要に応じて電話番号をお伝えします。
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">メールアドレス</th>
+            <td class="px-5 py-4">
+              <a href="mailto:d50557770@gmail.com" class="text-accent-cyan hover:underline">d50557770@gmail.com</a>
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">サービス名</th>
+            <td class="px-5 py-4 text-ink-secondary">Code Auxiliary</td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">販売価格</th>
+            <td class="px-5 py-4 text-ink-secondary space-y-1">
+              <div>Pro プラン：<span class="text-ink-primary font-semibold">980円（税込）／月</span></div>
+              <div>買い切りプラン：<span class="text-ink-primary font-semibold">5,000円（税込）</span></div>
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">販売価格以外に必要な費用</th>
+            <td class="px-5 py-4 text-ink-secondary">なし</td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">支払方法</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              クレジットカード（Visa・Mastercard・American Express・JCB 等）
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">支払時期</th>
+            <td class="px-5 py-4 text-ink-secondary space-y-1">
+              <div>Pro プラン：ご購入時に初回課金、以降毎月同日に自動更新</div>
+              <div>買い切りプラン：ご購入時に一括お支払い</div>
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">サービス提供時期</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              決済完了後、即時にライセンスキーを発行します。
+            </td>
+          </tr>
+
+          <tr class="border-b border-white/5">
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">解約・キャンセル</th>
+            <td class="px-5 py-4 text-ink-secondary space-y-2">
+              <div><span class="text-ink-primary text-xs font-medium">Pro プラン（月額）</span><br>
+              マイページよりいつでも解約可能です。解約後は次の請求日以降の課金は発生しません。なお、既に請求済みの期間に対する返金は承っておりません。</div>
+              <div><span class="text-ink-primary text-xs font-medium">買い切りプラン</span><br>
+              デジタルコンテンツの性質上、ご購入後の返金は承っておりません。</div>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="text-left px-5 py-4 text-xs text-ink-muted font-medium align-top">動作環境</th>
+            <td class="px-5 py-4 text-ink-secondary">
+              Node.js v18 以上 ／ macOS・Windows・Linux
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-8 text-xs text-ink-muted leading-relaxed">
+      ご不明な点は <a href="mailto:d50557770@gmail.com" class="text-accent-cyan hover:underline">d50557770@gmail.com</a> までお気軽にお問い合わせください。
+    </p>
+  </main>
+
+</body>
+</html>
