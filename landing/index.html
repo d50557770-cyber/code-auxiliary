@@ -353,6 +353,17 @@
             <p class="text-xs text-ink-muted leading-relaxed">別の Ubuntu ウィンドウを開いて <code class="text-accent-cyan">claude</code> と入力するだけで、Code Auxiliary が自動で解説を始めます。</p>
           </div>
 
+          <!-- トラブルシューティング: localhost につながらない -->
+          <div class="rounded-lg border border-accent-amber/20 bg-accent-amber/4 p-3 mb-4">
+            <p class="text-[10px] text-accent-amber/80 font-semibold mb-2">⚠ localhost:3001 に接続できない場合</p>
+            <p class="text-xs text-ink-muted leading-relaxed mb-2">WSL2 では <code class="text-accent-cyan">localhost</code> が Windows ブラウザに届かないことがあります。その場合は Ubuntu で WSL の IP を確認してください。</p>
+            <div class="rounded border border-white/8 p-2 flex items-center gap-2 mb-2" style="background: #0d0f14">
+              <code class="text-xs text-accent-cyan flex-1" id="win-ip-cmd">hostname -I</code>
+              <button onclick="copyCmd('win-ip-cmd', this)" class="text-[10px] px-2 py-1 rounded border border-white/15 text-ink-muted hover:text-ink-primary transition-colors shrink-0" style="background: #1a1e28">コピー</button>
+            </div>
+            <p class="text-xs text-ink-muted leading-relaxed">表示された IP（例: <span class="text-accent-cyan">172.28.x.x</span>）を使って Windows ブラウザで <span class="text-accent-cyan">http://172.28.x.x:3001</span> を開いてください。</p>
+          </div>
+
           <!-- 次回以降の起動 -->
           <div class="rounded-lg border border-accent-cyan/10 bg-accent-cyan/3 p-3 mb-2">
             <p class="text-[10px] text-accent-cyan/70 uppercase tracking-widest mb-2">次回以降の起動</p>
