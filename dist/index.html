@@ -13,5 +13,81 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // 買い切りプラン以外は API キー関連の UI を非表示にする
+      (function () {
+        function getPlan() {
+          var token = localStorage.getItem("pro_token");
+          if (!token) return Promise.resolve(null);
+          return fetch("/api/session/validate", { headers: { "x-pro-token": token } })
+            .then(function (r) { return r.json(); })
+            .then(function (d) { return d.valid ? d.plan : null; })
+            .catch(function () { return null; });
+        }
+
+        function hideApiElements(plan) {
+          if (plan === "buy_once") return;
+
+          // APIキー設定状況（設定パネル）
+          document.querySelectorAll("p").forEach(function (el) {
+            if (el.textContent === "APIキー設定状況") {
+              var section = el.closest("div");
+              if (section && section.parentElement) section.parentElement.style.display = "none";
+            }
+          });
+
+          // ガイド STEP 1「APIキーを設定する」
+          document.querySelectorAll("span, p, h3, div").forEach(function (el) {
+            if (el.textContent && el.textContent.includes("APIキーを設定する")) {
+              // StepCard コンポーネントの親 div を探す
+              var card = el.closest('[class*="rounded"]');
+              while (card && !card.querySelector('[class*="border-accent"]')) {
+                card = card.parentElement;
+              }
+              if (card) card.style.display = "none";
+            }
+          });
+
+          // セットアップ完了チェックの「APIキーが1つ以上設定済み」行
+          document.querySelectorAll("span, p").forEach(function (el) {
+            if (el.textContent === "APIキーが1つ以上設定済み") {
+              var row = el.closest("div");
+              if (row) row.style.display = "none";
+            }
+          });
+
+          // FAQ の「APIキーが設定されていません」項目
+          document.querySelectorAll("p, span, button").forEach(function (el) {
+            if (el.textContent && el.textContent.includes("APIキーが設定されていません")) {
+              var faqItem = el.closest('[class*="rounded"]') || el.closest("div");
+              if (faqItem) faqItem.style.display = "none";
+            }
+          });
+
+          // ガイド冒頭の説明「API キーとフックの設定」→「フックの設定」に変更
+          document.querySelectorAll("p, span").forEach(function (el) {
+            if (el.textContent && el.textContent.includes("API キーとフックの設定ができます")) {
+              el.textContent = el.textContent.replace("API キーとフックの設定ができます", "フックの設定ができます");
+            }
+          });
+        }
+
+        // React の描画後に実行
+        var observer = new MutationObserver(function (mutations, obs) {
+          var root = document.getElementById("root");
+          if (root && root.children.length > 0) {
+            obs.disconnect();
+            getPlan().then(function (plan) {
+              hideApiElements(plan);
+              // タブ切り替え時にも再実行
+              new MutationObserver(function () {
+                getPlan().then(hideApiElements);
+              }).observe(root, { childList: true, subtree: true });
+            });
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      })();
+    </script>
   </body>
 </html>
