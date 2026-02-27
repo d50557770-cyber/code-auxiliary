@@ -29,70 +29,42 @@
             .catch(function () { planChecked = true; cachedPlan = null; cb(null); });
         }
 
-        var API_TEXTS = [
-          "APIキー設定状況",
-          "APIキーの設定方法",
-          "Gemini API Key",
-          "OpenAI API Key",
-          "Anthropic API Key",
-          "APIキーが設定されていません",
-          "APIキーが1つ以上設定済み",
-          "APIキーを設定する",
-          "APIキーを保存する",
-          "GEMINI_API_KEY",
-          "OPENAI_API_KEY",
-          "ANTHROPIC_API_KEY"
-        ];
+        // セクションタイトルの完全一致で親 div ごと非表示にする
+        var SECTION_TITLES = ["APIキー設定状況", "APIキーの設定方法", "API優先順位"];
 
-        function hideApiElements() {
+        function hideApiSections() {
           if (cachedPlan === "buy_once") return;
 
-          // テキストを含む全要素を走査して、APIキー関連のブロックを非表示
-          var allEls = document.querySelectorAll("p, span, div, button, label, code");
-          allEls.forEach(function (el) {
-            var txt = el.textContent || "";
-            for (var i = 0; i < API_TEXTS.length; i++) {
-              if (txt.indexOf(API_TEXTS[i]) === -1) continue;
-              // この要素自体がマッチした場合、表示用の親ブロックを探して非表示にする
-              // ただし大きすぎる親は隠さない（設定モーダル全体を消さないように）
-              if (el.textContent.trim() === API_TEXTS[i] || el.children.length < 3) {
-                // 直近の意味のある親を探す
-                var target = el;
-                var parent = el.parentElement;
-                // 親をたどって、兄弟要素がある div まで上がる
-                while (parent && parent.children.length <= 1 && parent.id !== "root") {
-                  target = parent;
-                  parent = parent.parentElement;
-                }
-                if (target && target.id !== "root") {
-                  target.style.display = "none";
+          // 全 <p> 要素からセクションタイトルを探す
+          var allP = document.querySelectorAll("p");
+          for (var i = 0; i < allP.length; i++) {
+            var txt = (allP[i].textContent || "").trim();
+            for (var j = 0; j < SECTION_TITLES.length; j++) {
+              if (txt === SECTION_TITLES[j]) {
+                // このタイトル <p> の親 <div> がセクション全体なので、それを非表示
+                var section = allP[i].parentElement;
+                if (section) {
+                  section.style.display = "none";
                 }
                 break;
               }
             }
-          });
+          }
 
-          // ガイド冒頭の説明文を変更
-          document.querySelectorAll("p, span").forEach(function (el) {
-            if (el.textContent && el.textContent.indexOf("API キーとフックの設定ができます") !== -1) {
-              el.textContent = el.textContent.replace("API キーとフックの設定ができます", "フックの設定ができます");
+          // 「APIキーが設定されていません」警告ブロック（セクション外に出る場合の保険）
+          var allDivs = document.querySelectorAll("div");
+          for (var i = 0; i < allDivs.length; i++) {
+            var t = (allDivs[i].textContent || "").trim();
+            if (t.indexOf("APIキーが設定されていません") !== -1 && t.length < 200) {
+              allDivs[i].style.display = "none";
             }
-          });
-
-          // FAQ「どの AI が使われているか分かりません」内の API キー言及を非表示
-          document.querySelectorAll("p, span, button, div").forEach(function (el) {
-            var t = (el.textContent || "").trim();
-            if (t.indexOf("どの AI が使われているか") !== -1 || t.indexOf("APIキーが設定されていません") !== -1) {
-              var block = el.closest('[class*="rounded"]');
-              if (block) block.style.display = "none";
-            }
-          });
+          }
         }
 
-        // 200ms 間隔でチェック（モーダルが開かれるタイミングを逃さない）
+        // 200ms 間隔でチェック
         setInterval(function () {
           checkPlan(function (plan) {
-            if (plan !== "buy_once") hideApiElements();
+            if (plan !== "buy_once") hideApiSections();
           });
         }, 200);
       })();
