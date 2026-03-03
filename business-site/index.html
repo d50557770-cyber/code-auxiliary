@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>田中 太郎 - フリーランスエンジニア</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- ナビゲーション -->
+  <nav class="fixed top-0 w-full bg-white shadow-sm z-50">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+      <span class="text-xl font-bold text-blue-600">田中 太郎</span>
+      <div class="flex gap-6 text-sm font-medium">
+        <a href="#about" class="hover:text-blue-600 transition">About</a>
+        <a href="#services" class="hover:text-blue-600 transition">サービス</a>
+        <a href="#works" class="hover:text-blue-600 transition">実績</a>
+        <a href="#contact" class="hover:text-blue-600 transition">お問い合わせ</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ヒーロー -->
+  <section class="min-h-screen flex items-center bg-gradient-to-br from-blue-50 to-white pt-20">
+    <div class="max-w-5xl mx-auto px-6 py-20">
+      <p class="text-blue-500 font-semibold mb-2 uppercase tracking-widest text-sm">Freelance Engineer</p>
+      <h1 class="text-5xl font-bold mb-6 leading-tight">
+        田中 太郎
+      </h1>
+      <p class="text-xl text-gray-600 mb-8 max-w-xl">
+        Webアプリ開発・システム設計を専門とするフリーランスエンジニアです。
+        お客様のビジネス課題をテクノロジーで解決します。
+      </p>
+      <div class="flex gap-4">
+        <a href="#contact" class="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition shadow-md">
+          お問い合わせ
+        </a>
+        <a href="#works" class="border border-blue-600 text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-blue-50 transition">
+          実績を見る
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-12 text-center">About</h2>
+      <div class="flex flex-col md:flex-row gap-12 items-center">
+        <div class="w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-6xl flex-shrink-0 mx-auto">
+          👨‍💻
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold mb-4">田中 太郎（たなか たろう）</h3>
+          <p class="text-gray-600 mb-4 leading-relaxed">
+            10年以上のエンジニア経験を持つフリーランスエンジニアです。
+            大手IT企業でのシステム開発経験を活かし、2020年より独立。
+            Webアプリケーション開発からクラウドインフラ構築まで幅広く対応しています。
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">TypeScript</span>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">React</span>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">Node.js</span>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">AWS</span>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">Docker</span>
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">PostgreSQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- サービス -->
+  <section id="services" class="py-20 bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-12 text-center">サービス</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition">
+          <div class="text-4xl mb-4">🌐</div>
+          <h3 class="text-xl font-bold mb-3">Webアプリ開発</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            React / Next.js を用いた高品質なWebアプリケーションを開発します。
+            レスポンシブ対応、SEO最適化も対応可能です。
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition">
+          <div class="text-4xl mb-4">⚙️</div>
+          <h3 class="text-xl font-bold mb-3">API・バックエンド開発</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            Node.js / Python を使ったRESTful API、GraphQL APIの設計・開発。
+            スケーラブルなシステム設計が得意です。
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition">
+          <div class="text-4xl mb-4">☁️</div>
+          <h3 class="text-xl font-bold mb-3">クラウドインフラ</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            AWS / GCP を活用したインフラ構築・運用。
+            CI/CDパイプライン構築でリリースを自動化します。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 実績 -->
+  <section id="works" class="py-20 bg-white">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-3xl font-bold mb-12 text-center">実績</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="border border-gray-200 rounded-2xl p-8 hover:border-blue-300 transition">
+          <div class="text-sm font-semibold text-blue-500 mb-2">2024年</div>
+          <h3 class="text-xl font-bold mb-3">ECサイトリニューアル</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            大手アパレルブランドのECサイトをNext.jsでリニューアル。
+            ページ読み込み速度を60%改善し、コンバージョン率が25%向上。
+          </p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Next.js</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">TypeScript</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">AWS</span>
+          </div>
+        </div>
+        <div class="border border-gray-200 rounded-2xl p-8 hover:border-blue-300 transition">
+          <div class="text-sm font-semibold text-blue-500 mb-2">2023年</div>
+          <h3 class="text-xl font-bold mb-3">在庫管理システム開発</h3>
+          <p class="text-gray-600 text-sm mb-4">
+            製造業向けの在庫管理SaaSを0から開発。
+            リアルタイム在庫追跡と自動発注機能を実装し、業務効率40%改善。
+          </p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">React</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">Node.js</span>
+            <span class="text-xs bg-gray-100 px-2 py-1 rounded">PostgreSQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- お問い合わせ -->
+  <section id="contact" class="py-20 bg-blue-600 text-white">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold mb-4">お問い合わせ</h2>
+      <p class="text-blue-100 mb-8">
+        お仕事のご依頼・ご相談はお気軽にどうぞ。2営業日以内にご返信いたします。
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="mailto:taro.tanaka@example.com"
+           class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-blue-50 transition shadow-md">
+          ✉️ メールで問い合わせ
+        </a>
+        <a href="tel:090-0000-0000"
+           class="border border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-500 transition">
+          📞 090-0000-0000
+        </a>
+      </div>
+      <p class="mt-8 text-blue-200 text-sm">営業時間：平日 9:00〜18:00</p>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm">
+    <p>© 2024 田中 太郎. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

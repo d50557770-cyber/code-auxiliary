@@ -20,6 +20,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 import Stripe from "stripe";
+import { verifyLineSignature, handleLineWebhook } from "./line-bot.js";
 
 const LOG_DIR            = join(homedir(), ".code-explainer", "logs");
 const PROMPT_DIR         = join(homedir(), ".code-explainer", "prompts");
@@ -1226,6 +1227,67 @@ app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), (req,
   }
   res.json({ received: true });
 });
+
+// ── LINE Webhook ──────────────────────────────────────────────────────────────
+
+// LINE からの raw body が必要なため express.raw() を使う
+app.post(
+  "/webhook/line",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const channelSecret = process.env.LINE_CHANNEL_SECRET;
+    const channelAccessToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+    const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!channelSecret || !channelAccessToken) {
+      console.error("[LINE] 環境変数 LINE_CHANNEL_SECRET / LINE_CHANNEL_ACCESS_TOKEN が未設定");
+      return res.status(500).json({ error: "LINE設定が未完了です" });
+    }
+    if (!anthropicApiKey) {
+      console.error("[LINE] 環境変数 ANTHROPIC_API_KEY が未設定");
+      return res.status(500).json({ error: "Anthropic APIキーが未設定です" });
+    }
+
+    const signature = req.headers["x-line-signature"] as string | undefined;
+    if (!signature) {
+      return res.status(400).json({ error: "署名がありません" });
+    }
+
+    const rawBody = req.body as Buffer;
+    if (!verifyLineSignature(rawBody, signature, channelSecret)) {
+      console.warn("[LINE] 署名検証失敗 - 不正なリクエストの可能性");
+      return res.status(401).json({ error: "署名が無効です" });
+    }
+
+    let body: { destination: string; events: unknown[] };
+    try {
+      body = JSON.parse(rawBody.toString("utf-8"));
+    } catch {
+      return res.status(400).json({ error: "JSONパースエラー" });
+    }
+
+    // 即座に200を返す（LINEのタイムアウト対策）
+    res.json({ ok: true });
+
+    // 非同期でイベント処理
+    handleLineWebhook(
+      body as Parameters<typeof handleLineWebhook>[0],
+      undefined,
+      channelAccessToken,
+      anthropicApiKey
+    ).catch((err) => console.error("[LINE] handleLineWebhook エラー:", err));
+  }
+);
+
+// ── ビジネスサイト配信 ────────────────────────────────────────────────────────
+
+const businessSitePath = join(dirname(fileURLToPath(import.meta.url)), "..", "business-site");
+if (existsSync(businessSitePath)) {
+  app.use("/business-site", express.static(businessSitePath));
+  console.log("[business-site] /business-site で配信します");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function startServer() {
   const landingPath = join(dirname(fileURLToPath(import.meta.url)), "..", "landing");
